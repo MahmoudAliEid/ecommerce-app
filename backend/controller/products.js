@@ -31,5 +31,24 @@ getSingleProducts = async (req, res, next) => {
     products,
   });
 };
+UpdateSingleProduct = async (req, res, next) => {
+  let products = await product_model.findById(req.params.id);
+  if (!products) {
+    res.status(500).json({
+      success: false,
+      message: "Product Not Found",
+    });
+  }
+  products = await product_model.findByIdAndUpdate(req.params.id, req.body);
+  res.status(201).json({
+    success: true,
+    products,
+  });
+};
 
-module.exports = {getProducts, NewProduct, getSingleProducts};
+module.exports = {
+  getProducts,
+  NewProduct,
+  getSingleProducts,
+  UpdateSingleProduct,
+};
