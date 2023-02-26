@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 mongoose.Promise = global.Promise;
-
+mongoose.set("strictQuery", true);
 // Connect MongoDB at default port 27017.
 mongoose.connect(
-  "mongodb://localhost:27017/Shop_IT",
+  process.env.DBURL,
   {
     useNewUrlParser: true,
   },

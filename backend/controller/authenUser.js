@@ -11,10 +11,15 @@ resigteration = async (req, res, next) => {
       url: "https://res.cloudinary.com/dcn2eoa1u/image/upload/v1677256964/samples/people/boy-snow-hoodie.jpg",
     },
   });
+  const token = user.getAuthentication();
   res.status(200).json({
     success: true,
-    user,
+    token,
   });
 };
+login = async (req, res, next) => {
+  // const {email, password} = req.body;
+  await User.findByCredentials(req, res, next);
+};
 
-module.exports = {resigteration};
+module.exports = {resigteration, login};

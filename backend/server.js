@@ -1,8 +1,8 @@
 const app = require("./app");
-require("dotenv").config();
-const port = process.env.PORT || 3000;
+const dotEnv = require("dotenv");
+dotEnv.config({path: "backend/config/config.env"});
 require("./config/database");
 
-app.listen(port, () =>
-  console.log("> Server is up and running on port : " + port)
+app.listen(process.env.PORT, () =>
+  console.log(`Server is up and running on port : ${process.env.PORT} `)
 );
