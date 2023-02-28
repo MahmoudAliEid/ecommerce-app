@@ -55,31 +55,80 @@ Update_profile = CatchError(async(req, res, next) => {
         success: true,
     });
 });
-logout = CatchError(async(req, res, next) => {
-    res.cookie("token", null, {
-        expires: new Date(Date.now()),
-        httpOnly: true,
-    });
+Update_User = CatchError(async (req, res, next) => {
+  const newUser = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+  await User.findByIdAndUpdate(req.user.id, newUser, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({
+    success: true,
+  });
+});
+logout = CatchError(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
 
-    res.status(201).json({
-        success: true,
-        message: "Logged out ",
-    });
+  res.status(201).json({
+    success: true,
+    message: "Logged out ",
+  });
 });
 
-getUserProfile = CatchError(async(req, res, next) => {
-    const user = await User.findById(req.user.id);
-    res.status(200).json({
-        success: true,
-        user,
-    });
+getUserProfile = CatchError(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+getAllUsers = CatchError(async (req, res, next) => {
+  const users = await User.find();
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+getUserById = CatchError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorHandler("User Does not found ", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+DeleteUserById = CatchError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorHandler("User Does not found ", 404));
+  }
+  await user.delete();
+
+  res.status(200).json({
+    success: true,
+  });
 });
 
 module.exports = {
-    resigteration,
-    login,
-    logout,
-    getUserProfile,
-    Update_Password,
-    Update_profile,
+  resigteration,
+  login,
+  logout,
+  getUserProfile,
+  Update_Password,
+  Update_profile,
+  getAllUsers,
+  getUserById,
+  Update_User,
+  DeleteUserById,
 };
