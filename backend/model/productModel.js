@@ -2,96 +2,96 @@ const mongoose = require("mongoose"); // Erase if already required
 
 // Declare the Schema of the Mongo model
 var ProductSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter product name"],
-    trim: true,
-    maxLength: [100, "product name cannot exceed 100 character"],
-  },
-  price: {
-    type: Number,
-    required: [true, "Please enter product price"],
-    trim: true,
-    maxLength: [5, "product price cannot exceed 5 character"],
-    default: 0.0,
-  },
-  description: {
-    type: String,
-    required: [true, "Please enter product description"],
-  },
-  ratings: {
-    type: Number,
-    default: 0,
-  },
-  images: [
-    {
-      public_id: {
+    name: {
         type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
+        required: [true, "Please enter product name"],
+        trim: true,
+        maxLength: [100, "product name cannot exceed 100 character"],
     },
-  ],
-  category: {
-    type: String,
-    required: [true, "Please select product category"],
-    enum: {
-      values: [
-        "Electronics",
-        "Cameras",
-        "Laptop",
-        "Accessories",
-        "HeadPhones",
-        "Phones",
-        "Books",
-        "Clothes/Shoes",
-        "Beauty/Health",
-        "Sports",
-        "Outdoor",
-        "Home",
-      ],
-      message: "Please select correct category for product",
+    price: {
+        type: Number,
+        required: [true, "Please enter product price"],
+        trim: true,
+        maxLength: [5, "product price cannot exceed 5 character"],
+        default: 0.0,
     },
-  },
-  seller: {
-    type: String,
-    required: [true, "Please enter product seller"],
-  },
-  stock: {
-    type: Number,
-    require: [true, "Please enter product stock"],
-    default: 0,
-  },
-  numOfReviews: {
-    type: Number,
-    default: 0,
-  },
-  reviews: [
-    {
-      author: {
+    description: {
         type: String,
-        required: [true, "Please enter product author"],
-      },
-      ratings: {
+        required: [true, "Please enter product description"],
+    },
+    ratings: {
         type: Number,
         default: 0,
-        min: 0,
-        max: 5,
-        required: [true, "Please enter product ratings"],
-      },
-      Comment: {
-        type: String,
-        required: [true, "Please enter product comment"],
-      },
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+    images: [{
+        public_id: {
+            type: String,
+            required: true,
+        },
+        url: {
+            type: String,
+            required: true,
+        },
+    }, ],
+    category: {
+        type: String,
+        required: [true, "Please select product category"],
+        enum: {
+            values: [
+                "Electronics",
+                "Cameras",
+                "Laptop",
+                "Accessories",
+                "HeadPhones",
+                "Phones",
+                "Books",
+                "Clothes/Shoes",
+                "Beauty/Health",
+                "Sports",
+                "Outdoor",
+                "Home",
+            ],
+            message: "Please select correct category for product",
+        },
+    },
+    seller: {
+        type: String,
+        required: [true, "Please enter product seller"],
+    },
+    stock: {
+        type: Number,
+        require: [true, "Please enter product stock"],
+        default: 0,
+    },
+    numOfReviews: {
+        type: Number,
+        default: 0,
+    },
+    reviews: [{
+        author: {
+            type: String,
+            required: [true, "Please enter product author"],
+        },
+        ratings: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 5,
+            required: [true, "Please enter product ratings"],
+        },
+        Comment: {
+            type: String,
+            required: [true, "Please enter product comment"],
+        },
+    }, ],
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 //Export the model
