@@ -12,6 +12,7 @@ const {
   Update_User,
   DeleteUserById,
   forgetPassword,
+  resetPassword,
 } = require("../controller/authenUser");
 const { auth, Roles } = require("../middleware/auth");
 
@@ -28,4 +29,5 @@ router.route("/me").get(auth, getUserProfile);
 router.route("/updatePassword").put(auth, Update_Password);
 router.route("/updateProfile").put(auth, Update_profile);
 router.route("/password/forget").post(forgetPassword);
+router.route("/password/reset/:token").post(resetPassword);
 module.exports = router;

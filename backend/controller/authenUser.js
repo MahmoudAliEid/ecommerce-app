@@ -1,7 +1,8 @@
 const { User } = require("../model/user");
 const sendingToken = require("../utils/tokenAuth");
 const CatchError = require("../middleware/catchAsyncError");
-const bcrypt = require("bcryptjs"); // Erase
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const ErrorHandler = require("../utils/ErrorHandle");
 const { sendEmail } = require("../utils/sendEmail");
 
@@ -120,7 +121,7 @@ DeleteUserById = CatchError(async (req, res, next) => {
     success: true,
   });
 });
-
+//forget Password controller
 forgetPassword = CatchError(async (req, res, next) => {
   try {
     //get the user
@@ -164,6 +165,45 @@ forgetPassword = CatchError(async (req, res, next) => {
     return next(error);
   }
 });
+//forget Password controller
+resetPassword = CatchError(async (req, res, next) => {
+  try {
+    //hash the token to compare it with anthor one in Databse
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    //get the User form Database
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    //check
+    if (!user) {
+      return new ErrorHandler(
+        "The Token isn't valid or it has been expired!",
+        400
+      );
+    }
+    //then after check if user is exist then compare the password and confiremPassword
+    if (req.body.password != req.body.confiremPassword) {
+      return next(new ErrorHandler("Confirem Password doesn't match!", 400));
+    } else {
+      //setup new password
+      user.password = req.body.password;
+      //set the token to undefined after reset
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      //then save the user
+      await user.save();
+      sendingToken(user, 200, res);
+    }
+  } catch (error) {
+    return next(new ErrorHandler(error, 403));
+  }
+});
 
 module.exports = {
   resigteration,
@@ -177,4 +217,5 @@ module.exports = {
   Update_User,
   DeleteUserById,
   forgetPassword,
+  resetPassword,
 };
