@@ -53,7 +53,7 @@ myorders = CatchError(async (req, res, next) => {
   });
 });
 
-//Get all orders
+//Get all orders-Admin
 AllOrders = CatchError(async (req, res, next) => {
   const orders = await Order.find();
 
@@ -69,4 +69,37 @@ AllOrders = CatchError(async (req, res, next) => {
   });
 });
 
-module.exports = { new_order, getSingleOrder, myorders, AllOrders };
+//Update order-Admin
+updateOrder = CatchError(async (req, res, next) => {
+  const order = await Order.find({ _id: req.params.id });
+
+  if (order.orderStatus === "Deliverd") {
+    return next(new ErrorHandler("You have already delivered this order", 400));
+  }
+  order.orderltems.forEach(async (item) => {
+    await updateStock(item.product, item.quantity);
+  });
+
+  (order.orderStatus = req.body.status), (order.deliveredAt = Date.now());
+  await order.save();
+
+  res.status(200).json({
+    success: true,
+    order,
+  });
+});
+
+//create Update Stock Function
+async function updateStock(id, quantity) {
+  const product = await Product.findById(id);
+  product.stock -= quantity;
+  await product.save({ validateBeforeSave: false });
+}
+
+module.exports = {
+  new_order,
+  getSingleOrder,
+  myorders,
+  AllOrders,
+  updateOrder,
+};
