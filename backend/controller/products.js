@@ -102,6 +102,14 @@ createProductReview = CatchError(async (req, res, next) => {
     success: true,
   });
 });
+//get Product Reviews
+getProductReviews = CatchError(async (req, res, next) => {
+  const product = await product_model.find(req.params.id);
+  res.status(200).json({
+    success: true,
+    reviews: product.reviews,
+  });
+});
 
 module.exports = {
   getProducts,
@@ -110,4 +118,5 @@ module.exports = {
   UpdateSingleProduct,
   deleteSingleProduct,
   createProductReview,
+  getProductReviews,
 };

@@ -107,6 +107,7 @@ deleteOrder = CatchError(async (req, res, next) => {
     success: true,
   });
 });
+
 module.exports = {
   new_order,
   getSingleOrder,

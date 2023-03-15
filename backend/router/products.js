@@ -7,12 +7,14 @@ const {
   UpdateSingleProduct,
   deleteSingleProduct,
   createProductReview,
+  getProductReviews,
 } = require("../controller/products");
 const { auth, Roles } = require("../middleware/auth");
 
 router.route("/products").get(getProducts);
 router.route("/products/:id").get(getSingleProducts);
 router.route("/product/review").put(auth, createProductReview);
+router.route("/product/reviews/:id").get(auth, getProductReviews);
 router
   .route("/admin/products/:id")
   .put(auth, Roles("Admin"), UpdateSingleProduct)
