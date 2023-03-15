@@ -1,4 +1,4 @@
-product_model = require("../model/productModel");
+const product_model = require("../model/productModel");
 Api_feature = require("../utils/api_feature");
 const ErrorHandler = require("../utils/ErrorHandle");
 const CatchError = require("../middleware/catchAsyncError");
@@ -104,10 +104,41 @@ createProductReview = CatchError(async (req, res, next) => {
 });
 //get Product Reviews
 getProductReviews = CatchError(async (req, res, next) => {
-  const product = await product_model.find(req.params.id);
+  const product = await product_model.findById(req.params.id);
   res.status(200).json({
     success: true,
     reviews: product.reviews,
+  });
+});
+//Delete a Review of Product
+deleteReview = CatchError(async (req, res, next) => {
+  const product = await product_model.findById(req.query.productId);
+  const reviews = product.reviews.filter(
+    (review) => review._id.toString() !== req.query.reviewId
+  );
+  const numOfReviews = reviews.length();
+  //update the Ratings
+  const ratings =
+    product.reviews.reduce((acc, review) => review.rating + acc, 0) /
+    reviews.length;
+
+  //update the product
+  await product_model.findByIdAndUpdate(
+    req.params.id,
+    {
+      reviews,
+      ratings,
+      numOfReviews,
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
   });
 });
 
@@ -119,4 +150,5 @@ module.exports = {
   deleteSingleProduct,
   createProductReview,
   getProductReviews,
+  deleteReview,
 };
