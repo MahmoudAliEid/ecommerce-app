@@ -2,11 +2,12 @@ const app = require("./app");
 const dotEnv = require("dotenv");
 dotEnv.config({ path: "backend/config/config.env" });
 require("./config/database");
+
 // Handling of Uncaught exceptions
 process.on("uncaughtException", (err) => {
   console.log(`ERROR: ${err.message}`);
   console.log("Shutting down due to uncaught exception ");
-  process.exit(l);
+  process.exit(1);
 });
 
 const server = app.listen(process.env.PORT, () =>
@@ -18,6 +19,6 @@ process.on("unhandledRejection", (err) => {
   console.log(`ERROR: ${err.stack}`);
   console.log("Shutting down the server due to Unhandled Promise rejection");
   server.close(() => {
-    propess.exit(l);
+    process.exit(1);
   });
 });

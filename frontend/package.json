@@ -44,8 +44,10 @@
       "last 1 safari version"
     ]
   },
+  "proxy":"http://127.0.0.1:3030",
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
-  "author": "",
+  "author": "Mahmoud Ali",
   "license": "ISC"
+  
 }
