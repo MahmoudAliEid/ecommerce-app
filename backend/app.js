@@ -11,6 +11,11 @@ const cookieparser = require("cookie-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieparser());
+app.use("", (req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next(); // pass control to the next middleware function
+});
+
 //using of Routers & Middelwares
 app.use(Products);
 app.use(user);

@@ -8,7 +8,7 @@
         "dev": "nodemon backend/server.js"
     },
     "keywords": [],
-    "author": "",
+    "author": "Mahmoud Ali",
     "license": "ISC",
     "dependencies": {
         "bcryptjs": "^2.4.3",
