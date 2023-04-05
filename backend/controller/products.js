@@ -14,6 +14,7 @@ NewProduct = CatchError(async (req, res, next) => {
 });
 
 getProducts = CatchError(async (req, res, next) => {
+  // return next(new ErrorHandler("This is Error test", 404));
   const resPage = 8;
   const prodCount = await product_model.countDocuments();
   const api_feature = new Api_feature(product_model.find(), req.query)
