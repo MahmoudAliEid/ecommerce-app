@@ -4,7 +4,6 @@ import { getProducts } from '../actions/productActions';
 import Product from './product/Product';
 import Loader from './layouts/Loader';
 import {  toast } from 'react-toastify';
- 
 import MetaData from './layouts/MetaData'
 const Home = () => {
   const dispatch = useDispatch();
