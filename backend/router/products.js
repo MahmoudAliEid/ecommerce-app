@@ -1,10 +1,13 @@
 const express = require("express");
+const upload = require("../middleware/multer");
+const multer = require("multer");
+const path = require("path");
 var router = express.Router();
 const {
   getProducts,
-  NewProduct,
+  newProduct,
   getSingleProducts,
-  UpdateSingleProduct,
+  updateSingleProduct,
   deleteSingleProduct,
   createProductReview,
   getProductReviews,
@@ -19,8 +22,10 @@ router.route("/product/reviews/:id").get(auth, getProductReviews);
 router.route("/product/reviews/delete").delete(auth, deleteReview);
 router
   .route("/admin/products/:id")
-  .put(auth, Roles("Admin"), UpdateSingleProduct)
+  .put(auth, Roles("Admin"), updateSingleProduct)
   .delete(auth, Roles("Admin"), deleteSingleProduct);
-router.route("/admin/products/new").post(auth, Roles("Admin"), NewProduct);
+router
+  .route("/admin/products/new")
+  .post(auth, Roles("Admin"), upload.single("img"), newProduct);
 
 module.exports = router;

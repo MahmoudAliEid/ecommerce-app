@@ -23,18 +23,11 @@ var ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  images: [
-    {
-      public_id: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  images: {
+    img: "",
+    preview: "",
+  },
+
   category: {
     type: String,
     required: [true, "Please select product category"],
@@ -69,12 +62,12 @@ var ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   reviews: [
     {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
       name: {
         type: String,
         required: [true, "Please enter product author"],

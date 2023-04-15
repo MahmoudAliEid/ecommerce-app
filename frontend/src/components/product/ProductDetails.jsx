@@ -35,8 +35,8 @@ function ProductDetails() {
                     <div className="col-12 col-lg-5 img-fluid" id="product_image">
                         <Carousel pause="hover">
                             {product.images && product.images.map(image => (
-                                <Carousel.Item key={image.public_id}>
-                                    <img className='d-block w-100' src={image.url} alt={product.title}></img>
+                                <Carousel.Item key={image.preview}>
+                                    <img className='d-block w-100' src={`http://localhost:3030/ ${image.img}`} alt={product.title}></img>
                                 </Carousel.Item>
                             )
                             )}

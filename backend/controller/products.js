@@ -2,17 +2,52 @@ const product_model = require("../model/productModel");
 Api_feature = require("../utils/api_feature");
 const ErrorHandler = require("../utils/ErrorHandle");
 const CatchError = require("../middleware/catchAsyncError");
-
-NewProduct = CatchError(async (req, res, next) => {
+const upload = require("../middleware/multer");
+const path = require("path");
+newProduct = CatchError(async (req, res, next) => {
   req.body.user = req.user.id;
-  const product = await product_model.create(req.body);
+  try {
+    const {
+      name,
+      price,
+      description,
+      ratings,
+      category,
+      seller,
+      stock,
+      numOfReviews,
+      user,
+      reviews,
+    } = req.body;
+    const img = path.relative(process.cwd(), req.file.path);
 
-  res.status(201).json({
-    success: true,
-    product,
-  });
+    const product = new product_model({
+      name,
+      price,
+      description,
+      ratings,
+      images: {
+        img,
+        preview: req.file.filename,
+      },
+      category,
+      seller,
+      stock,
+      numOfReviews,
+      user,
+      reviews,
+    });
+
+    await product.save();
+
+    res.status(201).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
-
 getProducts = CatchError(async (req, res, next) => {
   // return next(new ErrorHandler("This is Error test", 404));
   const resPage = 8;
@@ -40,15 +75,30 @@ getSingleProducts = CatchError(async (req, res, next) => {
     products,
   });
 });
-UpdateSingleProduct = CatchError(async (req, res, next) => {
-  let products = await product_model.findById(req.params.id);
-  if (!products) {
+updateSingleProduct = CatchError(async (req, res, next) => {
+  let product = await product_model.findById(req.params.id);
+  if (!product) {
     return next(new ErrorHandler("Product not found", 404));
   }
-  products = await product_model.findByIdAndUpdate(req.params.id, req.body);
-  res.status(201).json({
-    success: true,
-    products,
+
+  // Pass the Multer middleware to handle the file upload
+  upload.array("img", 12)(req, res, async function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    // Update the product with the new data
+    product.name = req.body.name;
+    product.price = req.body.price;
+    product.description = req.body.description;
+    product.img = req.files;
+
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      product,
+    });
   });
 });
 deleteSingleProduct = CatchError(async (req, res, next) => {
@@ -145,9 +195,9 @@ deleteReview = CatchError(async (req, res, next) => {
 
 module.exports = {
   getProducts,
-  NewProduct,
+  newProduct,
   getSingleProducts,
-  UpdateSingleProduct,
+  updateSingleProduct,
   deleteSingleProduct,
   createProductReview,
   getProductReviews,
