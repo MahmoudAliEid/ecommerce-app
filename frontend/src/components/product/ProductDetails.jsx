@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import {Carousel} from "react-bootstrap"
+// import {Carousel} from "react-bootstrap"
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { getProductDetails,clearErrors } from '../../actions/productActions'
 import Loader from '../layouts/Loader';
 import MetaData from '../layouts/MetaData';
 function ProductDetails() {
+    
     const {id}=useParams()
     const dispatch = useDispatch()
     const {loading,error,product}=useSelector(state=>state.productDetails)
@@ -29,18 +30,12 @@ function ProductDetails() {
     return (
         <>
             {loading ? <Loader /> : (<>
-                <MetaData title="Buy Best Products Online" />
+                <MetaData title={product.name} />
                 <div className="row f-flex justify-content-around">
                 
                     <div className="col-12 col-lg-5 img-fluid" id="product_image">
-                        <Carousel pause="hover">
-                            {product.images && product.images.map(image => (
-                                <Carousel.Item key={image.preview}>
-                                    <img className='d-block w-100' src={`http://localhost:3030/ ${image.img}`} alt={product.title}></img>
-                                </Carousel.Item>
-                            )
-                            )}
-                            </Carousel>
+                            <img className='d-block w-100' src={`http://localhost:3030/${product?.images?.img}`} alt={product.name}></img>
+                    
                         </div>
 
                         <div className="col-12 col-lg-5 mt-5">

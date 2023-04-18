@@ -20,6 +20,7 @@ export const productsReducer = (state = { products: [] }, action) => {
         loading: false,
         products: action.payload.products,
         productsCount: action.payload.prodCount,
+        resPerPage: action.payload.resPerPage,
       };
     case ALL_PRODUCTS_FAIL:
       return {
@@ -42,17 +43,18 @@ export const productDetailsReducer = (state = { product: {} }, action) => {
   switch (action.type) {
     case PRODUCT_DETAILS_REQUEST:
       return {
-        ...state,
         loading: true,
+        product: {},
       };
     case PRODUCT_DETAILS_SUCCESS:
       return {
         loading: false,
-        product: action.payload,
+        product: action.payload.product,
       };
     case PRODUCT_DETAILS_FAIL:
       return {
         ...state,
+        loading: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:

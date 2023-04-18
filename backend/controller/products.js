@@ -50,12 +50,12 @@ newProduct = CatchError(async (req, res, next) => {
 });
 getProducts = CatchError(async (req, res, next) => {
   // return next(new ErrorHandler("This is Error test", 404));
-  const resPage = 8;
+  const resPerPage = 4;
   const prodCount = await product_model.countDocuments();
   const api_feature = new Api_feature(product_model.find(), req.query)
     .search()
     .filter()
-    .pagination(resPage);
+    .pagination(resPerPage);
   const products = await api_feature.query;
 
   res.status(200).json({
@@ -63,18 +63,20 @@ getProducts = CatchError(async (req, res, next) => {
     count: products.length,
     prodCount,
     products,
+    resPerPage,
   });
 });
-getSingleProducts = CatchError(async (req, res, next) => {
-  const products = await product_model.findById(req.params.id);
-  if (!products) {
+getSingleProduct = CatchError(async (req, res, next) => {
+  const product = await product_model.findById(req.params.id);
+  if (!product) {
     return next(new ErrorHandler("Product not found", 404));
   }
   res.status(201).json({
     success: true,
-    products,
+    product,
   });
 });
+
 updateSingleProduct = CatchError(async (req, res, next) => {
   let product = await product_model.findById(req.params.id);
   if (!product) {
@@ -196,7 +198,7 @@ deleteReview = CatchError(async (req, res, next) => {
 module.exports = {
   getProducts,
   newProduct,
-  getSingleProducts,
+  getSingleProduct,
   updateSingleProduct,
   deleteSingleProduct,
   createProductReview,
