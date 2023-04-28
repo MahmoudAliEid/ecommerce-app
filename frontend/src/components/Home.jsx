@@ -68,7 +68,7 @@ const Home = () => {
                         min={1}
                         max={1000}
                         defaultValue={[1, 100]}
-                        tipFormatter={value => `%${value}`}
+                        tipFormatter={value => `$${value}`}
                         tipProps={{
                           placement: "top",
                           visible:true
