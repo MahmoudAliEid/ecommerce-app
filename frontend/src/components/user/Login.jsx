@@ -11,7 +11,7 @@ const Login = ({ location }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
- const history=useNavigate()
+    const history=useNavigate()
 
     const dispatch = useDispatch();
 
@@ -25,23 +25,23 @@ const Login = ({ location }) => {
             history("/")
         }
 
-        if (error) {
-            if (error) {
-      toast.error(`${error}`, {
-        position: 'top-center',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
-    }
+        
+    if (error) {
+        toast.error(`${error}`, {
+            position: 'top-center',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+        });
+    
             dispatch(clearErrors());
         }
 
-    }, [dispatch, alert, isAuthenticated, error, history ])
+    }, [dispatch, isAuthenticated, error, history ])
 
     const submitHandler = (e) => {
         e.preventDefault();
