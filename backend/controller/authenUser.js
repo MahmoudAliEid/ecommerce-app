@@ -5,16 +5,17 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const ErrorHandler = require("../utils/ErrorHandle");
 const { sendEmail } = require("../utils/sendEmail");
-
+const upload = require("../middleware/multer");
+const path = require("path");
 resigteration = CatchError(async (req, res, next) => {
   const { name, email, password } = req.body;
+  const picture = path.relative(process.cwd(), req.file.path);
   const user = await User.create({
     name,
     email,
     password,
-    avatar: {
-      public_id: "v1677256964",
-      url: "https://res.cloudinary.com/dcn2eoa1u/image/upload/v1677256964/samples/people/boy-snow-hoodie.jpg",
+    images: {
+      picture,
     },
   });
   sendingToken(user, 200, res);

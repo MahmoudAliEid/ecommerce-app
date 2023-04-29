@@ -7,11 +7,13 @@ import {
   productsReducer,
   productDetailsReducer,
 } from "./reducers/productReducers";
+import { authReducer } from "./reducers/userReducers";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 const reducer = combineReducers({
   products: productsReducer,
   productDetails: productDetailsReducer,
+  auth: authReducer,
 });
 //contain all data before load the application
 let initialState = {};
