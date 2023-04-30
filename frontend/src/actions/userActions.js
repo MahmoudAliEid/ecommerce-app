@@ -86,6 +86,21 @@ export const register = (userData) => async (dispatch) => {
     });
   }
 };
+// Logout user
+export const logout = () => async (dispatch) => {
+  try {
+    await axios.get("/logout");
+
+    dispatch({
+      type: LOGOUT_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: LOGOUT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 // Load user
 export const loadUser = () => async (dispatch) => {
   try {

@@ -2,10 +2,29 @@ import React, { Fragment } from 'react';
 import '../../App.css';
 import Search from './search';
 import { Link } from 'react-router-dom';
-
+import { logout } from '../../actions/userActions';
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify';
+
+
 const Header = () => {
-   const { user, loading } = useSelector(state => state.auth)
+  const dispatch=useDispatch()
+  const { user, loading } = useSelector(state => state.auth)
+  
+    const logoutHandler = () => {
+      dispatch(logout());
+      toast.success('🦄 Logged out successfully.', {
+position: "top-center",
+autoClose: 5000,
+hideProgressBar: false,
+closeOnClick: true,
+pauseOnHover: true,
+draggable: true,
+progress: undefined,
+theme: "light",
+});
+
+    }
   return (
     <Fragment>
       <nav className="navbar row">
@@ -43,12 +62,15 @@ const Header = () => {
 
                             <div className="dropdown-menu" aria-labelledby="dropDownMenuButton">
 
-                                {user && user.role === 'admin' && (
+                                {user && user.role === 'Admin' && (
                                     <Link className="dropdown-item" to="/dashboard">Dashboard</Link>
                                 )}
-                                <Link className="dropdown-item" to="/orders/me">Orders</Link>
+                                {user && user.role === 'user' && (
+                                    <Link className="dropdown-item" to="/orders/me">Orders</Link>
+                                )}
+                                
                                 <Link className="dropdown-item" to="/me">Profile</Link>
-                                <Link className="dropdown-item text-danger" to="/" >
+                                <Link className="dropdown-item text-danger" to="/" onClick={logoutHandler} >
                                     Logout
                                 </Link>
 
