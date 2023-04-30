@@ -8,6 +8,7 @@ import ProductDetails from "./components/product/ProductDetails";
 import Register from "./components/user/Register";
 import { loadUser } from "./actions/userActions";
 import store from "./store";
+import Profile from "./components/user/Profil";
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -22,6 +23,7 @@ function App() {
             <Route path="/search/:keyword" element={<Home></Home>} />
             <Route path="/login" element={<Login></Login>} />
             <Route path="/register" element={<Register></Register>} />
+            <Route path="/me" element={<Profile></Profile>} />
             <Route
               path="/product/:id"
               element={<ProductDetails></ProductDetails>}
