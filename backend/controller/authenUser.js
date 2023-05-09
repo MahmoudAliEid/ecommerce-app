@@ -3,10 +3,11 @@ const sendingToken = require("../utils/tokenAuth");
 const CatchError = require("../middleware/catchAsyncError");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-const ErrorHandler = require("../utils/ErrorHandle");
+const ErrorHandler = require("../utils/errorHandler");
 const { sendEmail } = require("../utils/sendEmail");
 const upload = require("../middleware/multer");
 const path = require("path");
+//this function for Resigtration
 resigteration = CatchError(async (req, res, next) => {
   const { name, email, password } = req.body;
   const picture = path.relative(process.cwd(), req.file.path);
@@ -20,6 +21,7 @@ resigteration = CatchError(async (req, res, next) => {
   });
   sendingToken(user, 200, res);
 });
+
 login = CatchError(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email }).select("+password");
@@ -40,10 +42,11 @@ Update_Password = CatchError(async (req, res, next) => {
   if (!isMatch) {
     return next(new ErrorHandler("Old password is incorrect", 404));
   }
-  user.password = req.body.password;
-  await user.save();
+  user.password = req.body.newPassword;
+  await user.save({ runValidators: false, useFindAndModify: false });
   sendingToken(user, 200, res);
 });
+
 Update_profile = CatchError(async (req, res, next) => {
   const newUser = {
     name: req.body.name,
@@ -56,14 +59,17 @@ Update_profile = CatchError(async (req, res, next) => {
   });
   res.status(200).json({
     success: true,
+    message: "Your Profile has been updated successfully!",
   });
 });
+//for Admin
 Update_User = CatchError(async (req, res, next) => {
   const newUser = {
     name: req.body.name,
     email: req.body.email,
     role: req.body.role,
   };
+
   await User.findByIdAndUpdate(req.user.id, newUser, {
     new: true,
     runValidators: true,
@@ -71,8 +77,10 @@ Update_User = CatchError(async (req, res, next) => {
   });
   res.status(200).json({
     success: true,
+    message: "The User has been updated successfully!",
   });
 });
+
 logout = CatchError(async (req, res, next) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
@@ -92,7 +100,7 @@ getUserProfile = CatchError(async (req, res, next) => {
     user,
   });
 });
-
+//for Admin
 getAllUsers = CatchError(async (req, res, next) => {
   const users = await User.find();
   res.status(200).json({
@@ -100,6 +108,7 @@ getAllUsers = CatchError(async (req, res, next) => {
     users,
   });
 });
+
 getUserById = CatchError(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -111,6 +120,7 @@ getUserById = CatchError(async (req, res, next) => {
     user,
   });
 });
+//for Admin
 DeleteUserById = CatchError(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -120,6 +130,7 @@ DeleteUserById = CatchError(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    massagge: "The User has been deleted successfully!",
   });
 });
 //forget Password controller
@@ -166,6 +177,7 @@ forgetPassword = CatchError(async (req, res, next) => {
     return next(error);
   }
 });
+
 //forget Password controller
 resetPassword = CatchError(async (req, res, next) => {
   try {

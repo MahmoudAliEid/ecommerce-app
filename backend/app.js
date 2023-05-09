@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 //here import the Routers
-const Products = require("./router/products");
+const { router } = require("./router/products");
 const user = require("./router/user");
 const Order = require("./router/order");
 //set up my requirements
@@ -23,7 +23,7 @@ app.use("", (req, res, next) => {
 });
 
 //using of Routers & Middelwares
-app.use(Products);
+app.use(router);
 app.use(user);
 app.use(errorMiddelware);
 app.use(Order);

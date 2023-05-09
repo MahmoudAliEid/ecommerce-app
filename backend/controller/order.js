@@ -1,7 +1,7 @@
 const Order = require("../model/Order");
-const Product = require("../model/productModel");
+const { productModel } = require("../model/productModel");
 const CatchError = require("../middleware/catchAsyncError");
-const ErrorHandler = require("../utils/ErrorHandle");
+const ErrorHandler = require("../utils/errorHandler");
 
 new_order = CatchError(async (req, res, next) => {
   const {
@@ -71,30 +71,43 @@ AllOrders = CatchError(async (req, res, next) => {
 
 //Update order-Admin
 updateOrder = CatchError(async (req, res, next) => {
-  const order = await Order.find({ _id: req.params.id });
+  const order = await Order.findById({ _id: req.params.id });
 
-  if (order.orderStatus === "Deliverd") {
+  if (!order) {
+    return next(new ErrorHandler("Order not found", 404));
+  }
+
+  if (order.orderStatus === "Delivered") {
     return next(new ErrorHandler("You have already delivered this order", 400));
   }
-  order.orderltems.forEach(async (item) => {
-    await updateStock(item.product, item.quantity);
-  });
 
-  (order.orderStatus = req.body.status), (order.deliveredAt = Date.now());
-  await order.save();
+  for (const item of order.orderltems) {
+    await updateStock(item.product, item.quantity);
+  }
+
+  order.paymentlnfo.orderStatus = req.body.orderStatus;
+  // order.paymentlnfo.deliveredAt = Date.now();
+  await order.save({ validateBeforeSave: false });
 
   res.status(200).json({
     success: true,
     order,
+    message: "The order has been updated successfully!",
   });
 });
 
-//create Update Stock Function
+// Create Update Stock Function
 async function updateStock(id, quantity) {
-  const product = await Product.findById(id);
+  const product = await productModel.findById(id);
+
+  if (!product) {
+    throw new ErrorHandler("Product not found", 404);
+  }
+
   product.stock -= quantity;
   await product.save({ validateBeforeSave: false });
 }
+
 //Delete order-Admin
 deleteOrder = CatchError(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
